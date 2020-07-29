@@ -6,9 +6,8 @@ I2C_SMBUS_BLOCK_MAX = 32
 
 
 class mock_smbus2:
-
-    def __init__(self, bus=None: Dict, force=False: bool):
-        """ Initialize and (optionally) open an i2c bus connection
+    def __init__(self, bus: None = Dict, force: False = bool):
+        """Initialize and (optionally) open an i2c bus connection
 
         :param bus: this is really an "address to device" map that we will use here
             to get a device object (e.g. MPR_device()) from an address (e.g. 0x18)
@@ -38,7 +37,6 @@ class mock_smbus2:
         this out later if it ends up being silly.
         """
         return {addr: device() for addr, device in bus.items()}
-
 
     def close(self):
         """
@@ -72,7 +70,7 @@ class mock_smbus2:
         """
         # TODO: Come back to this
         self._set_address(i2c_addr, force=force)
-        self.bus[i2c_addr]._write(0)
+        self.bus[self.addr]._read(0)
 
     def read_byte(self, i2c_addr, force=None):
         """
@@ -90,7 +88,8 @@ class mock_smbus2:
         way to do this, we should change it
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._write(i2c_smbus_read, self)
+        r = self.bus[self.addr]._read(self)
+        return r
 
     def write_byte(self, i2c_addr, value, force=None):
         """
@@ -101,7 +100,7 @@ class mock_smbus2:
 
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[addr]._read(val, self)
+        self.bus[addr]._write(val, self)
 
     def read_byte_data(self, i2c_addr, register, force=None):
         """
@@ -113,7 +112,7 @@ class mock_smbus2:
         I believe that this is the register on the device. TODO: Confirm this
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._write(I2C_SMBUS_READ, self, register=register)
+        self.bus[self.addr]._read(self, register=register)
         return  # TODO fixme
 
     def write_byte_data(self, i2c_addr, register, value, force=None):
@@ -124,7 +123,7 @@ class mock_smbus2:
             The register is specified through the Comm byte.
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._read(value, self, register=register)
+        self.bus[self.addr]._write(value, self, register=register)
 
     def read_word_data(self, i2c_addr, register, force=None):
         """
@@ -135,7 +134,7 @@ class mock_smbus2:
             byte. But this time, the data is a complete word (16 bits)
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._write(I2C_SMBUS_READ, self, register=register, size=2)
+        self.bus[self.addr]._read(self, register=register, size=2)
         return  # TODO fixme
 
     def write_word_data(self, i2c_addr, register, value, force=None):
@@ -148,7 +147,7 @@ class mock_smbus2:
             the Read Byte operation.
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._read(value, self, register=register, size=2)
+        self.bus[self.addr]._write(value, self, register=register, size=2)
 
     def process_call(self, i2c_addr, register, value, force=None):
         """
@@ -169,7 +168,7 @@ class mock_smbus2:
         Read a block of up to 32-bytes from a given register.
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._write(I2C_SMBUS_READ, self, register=register, size=I2C_SMBUS_BLOCK_MAX)
+        self.bus[self.addr]._read(self, register=register, size=I2C_SMBUS_BLOCK_MAX)
         return  # TODO fixme
 
     def write_block_data(self, i2c_addr, register, data, force=None):
@@ -181,7 +180,7 @@ class mock_smbus2:
             Comm byte. The amount of data is specified in the Count byte.
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._read(value, self, register=register)
+        self.bus[self.addr]._write(value, self, register=register)
 
     def block_process_call(self, i2c_addr, register, data, force=None):
         """
@@ -196,10 +195,11 @@ class mock_smbus2:
         Read a block of byte data from a given register.
         """
         if length > I2C_SMBUS_BLOCK_MAX:
-            raise ValueError("Desired block length over %d bytes" % I2C_SMBUS_BLOCK_MAX)
+            err_str = "Desired block length over {I2C_SMBUS_BLOCK_MAX} bytes"
+            raise ValueError(err_str)
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._write(I2C_SMBUS_READ, self, register=register, size=length)
-        return  # TODO fixme
+        r = self.bus[self.addr]._read(self, register=register, size=length)
+        return r
 
     def write_i2c_block_data(self, i2c_addr, register, data, force=None):
         """
@@ -207,10 +207,10 @@ class mock_smbus2:
         """
         length = len(data)
         if length > I2C_SMBUS_BLOCK_MAX:
-            raise ValueError("Data length cannot exceed %d bytes" % I2C_SMBUS_BLOCK_MAX)
+            err_str = "Data length cannot exceed {I2C_SMBUS_BLOCK_MAX} bytes"
+            raise ValueError(err_str)
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._read(value, self, register=register)
-
+        self.bus[self.addr]._write(value, self, register=register)
 
     def i2c_rdwr(self, *i2c_msgs):
         """
@@ -227,4 +227,3 @@ class mock_smbus2:
         """
         ioctl_data = i2c_rdwr_ioctl_data.create(*i2c_msgs)
         ioctl(self.fd, I2C_RDWR, ioctl_data)
-
