@@ -88,8 +88,7 @@ class mock_smbus2:
         way to do this, we should change it
         """
         self._set_address(i2c_addr, force=force)
-        r = self.bus[self.addr]._read(self)
-        return r
+        return self.bus[self.addr]._read(self)
 
     def write_byte(self, i2c_addr, value, force=None):
         """
@@ -100,7 +99,7 @@ class mock_smbus2:
 
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[addr]._write(val, self)
+        self.bus[addr]._write(val)
 
     def read_byte_data(self, i2c_addr, register, force=None):
         """
@@ -112,8 +111,7 @@ class mock_smbus2:
         I believe that this is the register on the device. TODO: Confirm this
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._read(self, register=register)
-        return  # TODO fixme
+        return self.bus[self.addr]._read(self, register=register)
 
     def write_byte_data(self, i2c_addr, register, value, force=None):
         """
@@ -123,7 +121,7 @@ class mock_smbus2:
             The register is specified through the Comm byte.
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._write(value, self, register=register)
+        self.bus[self.addr]._write(value, register=register)
 
     def read_word_data(self, i2c_addr, register, force=None):
         """
