@@ -37,6 +37,23 @@ function              |           description           |         parameters    
 | write_i2c_block_data(addr,cmd,vals) | Block Write transaction.        | int addr,char cmd,long[]   | None         |
 
 
+## Initial Setup
+
+```
+pip install -r requirements.dev.txt
+```
+
+## Dev
+
+Run the following commands, and make sure that they all pass before pushing:
+
+```
+make reformat
+make typecheck
+make test
+```
+(or `make prepush` to run all three at once, but this can have a lot of cluttered output if you've made a lot of changes)
+
 
 ###### why is it called mintstruments?
 ###### i was eating altoids while writing it

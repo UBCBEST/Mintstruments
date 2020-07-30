@@ -6,7 +6,7 @@ I2C_SMBUS_BLOCK_MAX = 32
 
 
 class mock_smbus2:
-    def __init__(self, bus: None = Dict, force: False = bool):
+    def __init__(self, bus: Dict = None, force: bool = False):
         """Initialize and (optionally) open an i2c bus connection
 
         :param bus: this is really an "address to device" map that we will use here

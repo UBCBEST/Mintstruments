@@ -15,7 +15,7 @@ from typing import Iterable, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
-    from mock_smbus2 import mock_smbus2
+    from .mock_smbus2 import mock_smbus2
 
 
 class I2C_device(ABC):
