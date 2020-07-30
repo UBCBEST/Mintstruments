@@ -35,7 +35,7 @@ class I2C_device(ABC):
         pass
 
     @abstractmethod
-    def _write(self, value: Iterable, sender: "mock_smbus2", reigster=0, size=1):
+    def _write(self, value: Iterable, sender: "mock_smbus2", register=0, size=1):
         """
         Much like the _read method, this is the write
         from the SMBus perspective. Mostly, this should

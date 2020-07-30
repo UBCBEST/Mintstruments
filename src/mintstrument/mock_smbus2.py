@@ -188,29 +188,29 @@ class mock_smbus2:
         block and receiving another variable-size response
         """
         self.write_i2c_block_data(i2c_addr, register, data, force=force)
-        return self.read_i2c_block_data(i2c_addr, register, length, force=force)
+        return self.read_i2c_block_data(i2c_addr, register, size, force=force)
 
-    def read_i2c_block_data(self, i2c_addr, register, length, force=None):
+    def read_i2c_block_data(self, i2c_addr, register, size, force=None):
         """
         Read a block of byte data from a given register.
         """
-        if length > I2C_SMBUS_BLOCK_MAX:
-            err_str = "Desired block length over {I2C_SMBUS_BLOCK_MAX} bytes"
+        if size > I2C_SMBUS_BLOCK_MAX:
+            err_str = f"Desired block size over {I2C_SMBUS_BLOCK_MAX} bytes"
             raise ValueError(err_str)
         self._set_address(i2c_addr, force=force)
-        r = self.bus[self.addr]._read(self, register=register, size=length)
+        r = self.bus[self.addr]._read(self, register=register, size=size)
         return r
 
     def write_i2c_block_data(self, i2c_addr, register, data, force=None):
         """
         Write a block of byte data to a given register.
         """
-        length = len(data)
-        if length > I2C_SMBUS_BLOCK_MAX:
-            err_str = "Data length cannot exceed {I2C_SMBUS_BLOCK_MAX} bytes"
+        size = len(data)
+        if size > I2C_SMBUS_BLOCK_MAX:
+            err_str = "Data size cannot exceed {I2C_SMBUS_BLOCK_MAX} bytes"
             raise ValueError(err_str)
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._write(value, self, register=register)
+        self.bus[self.addr]._write(data, register=register, size=len(data))
 
     def i2c_rdwr(self, *i2c_msgs):
         """
