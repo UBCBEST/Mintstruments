@@ -21,12 +21,10 @@ if TYPE_CHECKING:
 class I2C_device(ABC):
     @abstractmethod
     def __init__(self):
-        # TODO: Refactor into array, or some other type
-        #       of constant size
-        self.buff: List = None
+        self._buff: List = None
 
     @abstractmethod
-    def _read(self, sender: "mock_smbus2", register: int = 0, size: int = 1):
+    def _read(self, register: int = 0, size: int = 1):
         """
         This is read from the SMBus' perspective.
         I.e. When SMBus is trying to read, it will
@@ -35,7 +33,7 @@ class I2C_device(ABC):
         pass
 
     @abstractmethod
-    def _write(self, value: Iterable, sender: "mock_smbus2", register=0, size=1):
+    def _write(self, value: Iterable, register: int = 0, size: int = 1):
         """
         Much like the _read method, this is the write
         from the SMBus perspective. Mostly, this should

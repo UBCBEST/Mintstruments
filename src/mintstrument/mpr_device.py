@@ -10,11 +10,10 @@ class MPR_device(I2C_device):
     PRESSURE_CMD = [0xAA, 0, 0]
 
     def __init__(self):
-        self._address = 0x18  # by default
         self._buff = []
         self._ptr = 0
 
-    def _read(self, sender, register=0, size=1):
+    def _read(self, register=0, size=1):
         return self._buff[register : register + size]
 
     def _write(self, value, register=0, size=1):

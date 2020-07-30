@@ -111,7 +111,7 @@ class mock_smbus2:
         I believe that this is the register on the device. TODO: Confirm this
         """
         self._set_address(i2c_addr, force=force)
-        return self.bus[self.addr]._read(self, register=register)
+        return self.bus[self.addr]._read(register=register)
 
     def write_byte_data(self, i2c_addr, register, value, force=None):
         """
@@ -132,8 +132,7 @@ class mock_smbus2:
             byte. But this time, the data is a complete word (16 bits)
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._read(self, register=register, size=2)
-        return  # TODO fixme
+        return self.bus[self.addr]._read(register=register, size=2)
 
     def write_word_data(self, i2c_addr, register, value, force=None):
         """
@@ -145,7 +144,7 @@ class mock_smbus2:
             the Read Byte operation.
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._write(value, self, register=register, size=2)
+        self.bus[self.addr]._write(value, register=register, size=2)
 
     def process_call(self, i2c_addr, register, value, force=None):
         """
@@ -166,7 +165,7 @@ class mock_smbus2:
         Read a block of up to 32-bytes from a given register.
         """
         self._set_address(i2c_addr, force=force)
-        self.bus[self.addr]._read(self, register=register, size=I2C_SMBUS_BLOCK_MAX)
+        self.bus[self.addr]._read(register=register, size=I2C_SMBUS_BLOCK_MAX)
         return  # TODO fixme
 
     def write_block_data(self, i2c_addr, register, data, force=None):
@@ -196,7 +195,7 @@ class mock_smbus2:
             err_str = f"Desired block size over {I2C_SMBUS_BLOCK_MAX} bytes"
             raise ValueError(err_str)
         self._set_address(i2c_addr, force=force)
-        r = self.bus[self.addr]._read(self, register=register, size=size)
+        r = self.bus[self.addr]._read(register=register, size=size)
         return r
 
     def write_i2c_block_data(self, i2c_addr, register, data, force=None):
